@@ -6,6 +6,7 @@ from django.http import HttpResponse, JsonResponse
 
 from ..transferobjects.lockerdata import LockerTransferObject, GpsCoordinates
 from ..serializers.plainserializer import GeneralObjectSerializer
+from ..services.lockerlocation import LockerLocationService 
 import json
 
 class MyModel:
@@ -33,4 +34,23 @@ class LockerLocationsView(APIView):
         
         serializer = GeneralObjectSerializer(test)
         serialized = serializer.data
+        return JsonResponse(serialized)
+
+class LockerFindView(APIView):
+    '''
+    View for finding lockers near a position
+    '''
+    def get(self, request, format = None, *args, **kwargs):
+        '''
+        Get data for locker from location
+        ''' 
+        lat = float(kwargs['latitude'])
+        long = float(kwargs['longitude'])
+
+        radius = self.request.query_params.get('radius', 50.0)
+
+        lockers = LockerLocationService.get_locker_at_location(lat, long, radius)
+        serializer = GeneralObjectSerializer(lockers)
+        serialized = serializer.data
+
         return JsonResponse(serialized)
