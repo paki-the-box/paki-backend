@@ -4,8 +4,9 @@ from rest_framework import serializers
 from rest_framework import authentication, permissions
 from django.http import HttpResponse, JsonResponse
 
-from ..serializers.plainserializer import POPOSerializer
+from ..serializers.plainserializer import FlatObjectSerializer
 from ..transferobjects.lockerdata import LockerTransferObject
+import json
 
 class MyModel:
     def __init__(self):
@@ -23,5 +24,6 @@ class LockerLocationsView(APIView):
         test = LockerTransferObject()
         test.location_id = "1234-621761-671628"
         
-        serializer = POPOSerializer(test)
-        return JsonResponse(serializer.data)
+        serializer = FlatObjectSerializer(test)
+        serialized = serializer.data
+        return JsonResponse(serialized)

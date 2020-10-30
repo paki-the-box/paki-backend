@@ -8,6 +8,11 @@ from rest_framework.exceptions import ValidationError
 
 log = logging.getLogger(__name__)
 
+class FlatObjectSerializer(serializers.BaseSerializer):
+    def to_representation(self, instance):
+        prop_list = [a for a in dir(instance) if not a.startswith('__')]
+        value_dict = {k: getattr(instance, k) for k in prop_list}
+        return value_dict
 
 class POPOListSerializer(serializers.ListSerializer):
     """ List serializer for Plain Old Python Objects (POPO) """
