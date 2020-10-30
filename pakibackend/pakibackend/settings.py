@@ -29,26 +29,24 @@ ALLOWED_HOSTS = []
 
 # OPEN ID Connect Security Settings
 OPEN_ID_CONNECT_SERVER = "https://auth.demo.pragmaticindustries.de/auth/realms/packi"
-
+OIDC_OP_JWKS_ENDPOINT = "https://auth.demo.pragmaticindustries.de/auth/realms/test-simon/protocol/openid-connect/certs"
 OIDC_RP_SIGN_ALGO='RS256'
-OIDC_OP_JWKS_ENDPOINT = "%s/protocol/openid-connect/certs" % OPEN_ID_CONNECT_SERVER
 SESSION_SAVE_EVERY_REQUEST = True
 OIDC_RP_CLIENT_ID = "packi"
 OIDC_RP_CLIENT_NAME = "packi"
 OIDC_RP_NAME = "packi"
 OIDC_RP_CLIENT_SECRET = "651bb3dd-ffb6-4ef3-b5ba-151acd73b9e7"
 OIDC_DRF_AUTH_BACKEND = 'mozilla_django_oidc.auth.OIDCAuthenticationBackend'
-OIDC_OP_AUTHORIZATION_ENDPOINT = "%s/protocol/openid-connect/auth" % OPEN_ID_CONNECT_SERVER
-OIDC_OP_TOKEN_ENDPOINT = "%s/protocol/openid-connect/token" % OPEN_ID_CONNECT_SERVER
-OIDC_OP_USER_ENDPOINT = "%s/protocol/openid-connect/userinfo" % OPEN_ID_CONNECT_SERVER
+OIDC_OP_AUTHORIZATION_ENDPOINT = "https://auth.demo.pragmaticindustries.de/auth/realms/paki/protocol/openid-connect/auth"
+OIDC_OP_TOKEN_ENDPOINT = "https://auth.demo.pragmaticindustries.de/auth/realms/paki/protocol/openid-connect/token"
+OIDC_OP_USER_ENDPOINT = "https://auth.demo.pragmaticindustries.de/auth/realms/paki/protocol/openid-connect/userinfo"
 OIDC_CREATE_USER = True
 OIDC_STORE_ACCESS_TOKEN = True
 OIDC_STORE_ID_TOKEN = True
-OIDC_OP_LOGOUT_ENDPOINT = "%s/protocol/openid-connect/logout" % OPEN_ID_CONNECT_SERVER
+OIDC_OP_LOGOUT_ENDPOINT = "https://auth.demo.pragmaticindustries.de/auth/realms/paki/protocol/openid-connect/logout"
 OIDC_OP_LOGIN_ENDPOINT = "https://auth.demo.pragmaticindustries.de/auth"
 OIDC_RP_SCOPES = "openid email"
-OIDC_REDIRECT_FIELD_NAME = "next"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/home"
 LOGOUT_REDIRECT_URL = "/"
 
 # Application definition
@@ -61,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'paki',
     'mozilla_django_oidc'
 ]
 
