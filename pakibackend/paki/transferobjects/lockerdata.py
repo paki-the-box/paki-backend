@@ -80,4 +80,3 @@ class LockerTransferObject:
         self.contact: LockerContact = None
         self.usable : bool = True
         self.is_public: bool = True
-        
