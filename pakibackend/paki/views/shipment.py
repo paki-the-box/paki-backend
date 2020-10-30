@@ -24,3 +24,22 @@ class ShipmentView(APIView):
         serialized = serializer.data
 
         return JsonResponse(serialized, safe=False)
+
+    def get(self, request, *args, **kwargs):
+        '''
+        Get info about a shipment
+        '''
+        try:
+            shipment_id = kwargs['id']
+        except KeyError as keyError:
+            return HttpResponse(status=400)
+
+        try:
+            shipment = ShipmentService.get_shipment(shipment_id)
+        except NotFoundException as notFound:
+            return HttpResponse(status=404)
+
+        serializer = GeneralObjectSerializer(shipment)
+        serialized = serializer.data
+
+        return JsonResponse(serialized)

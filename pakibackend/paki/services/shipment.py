@@ -2,7 +2,9 @@
 Module with services for shipments
 '''
 
-from ..transferobjects.shipment import CreateShipmentData
+from ..transferobjects.shipment import CreateShipmentData, Shipment
+from .errors import NotFoundException
+
 
 class ShipmentService:
 
@@ -14,5 +16,16 @@ class ShipmentService:
         * Create shipment in the Box system
         * Return the shipment information to the user
         '''
+        #TODO: Implement this
+        shipment_data = Shipment()
+        return shipment_data
+
+    @staticmethod
+    def get_shipment(shipment_id: str):
+        '''
+        Get an existing shipment
+        '''
+        #TODO: Implement this
+        shipment_data = Shipment()
         
-        return None
+        return shipment_data
