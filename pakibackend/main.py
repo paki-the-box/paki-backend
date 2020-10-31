@@ -85,6 +85,7 @@ class SendResponse(BaseModel):
     I accept and will pick it up
     Receiver -> Backend
     """
+    id: uuid.UUID
     request: SendRequest
     status: DropoffStatus
     pickup_date: date
