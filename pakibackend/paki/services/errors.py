@@ -13,3 +13,8 @@ class InvalidStatusException(Exception):
     Exception when the shipment is not in the correct state
     '''
     pass
+
+class ShipmentCreationFailedException(Exception):
+    '''
+    Exception when the shipment is not creatable
+    '''

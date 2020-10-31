@@ -4,6 +4,7 @@ Module with services for shipments
 
 from ..transferobjects.shipment import CreateShipmentData, Shipment, CollectionCodeData
 from .errors import NotFoundException
+from .apiclient import BoxApiClientService
 
 
 class ShipmentService:
@@ -16,8 +17,8 @@ class ShipmentService:
         * Return the shipment information to the user
         '''
         #TODO: Implement this
-        shipment_data = Shipment()
-        return shipment_data
+        response = BoxApiClientService.create_shipment(shipment_data)
+        return response
 
     @staticmethod
     def get_shipment(shipment_id: str):

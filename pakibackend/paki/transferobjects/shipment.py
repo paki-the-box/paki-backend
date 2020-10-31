@@ -25,7 +25,7 @@ class Shipment:
         '''
         self.shipment_id: str = None
         self.sending_user_id: int = 0
-        self.receiving_user_is: int = 0
+        self.receiving_user_id: int = 0
         self.shipped_item: ShippedItem = None
         self.starting_locker_id: str = None
         self.destination_locker_id: str = None
