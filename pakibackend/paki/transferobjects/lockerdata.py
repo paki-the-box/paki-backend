@@ -10,6 +10,7 @@ class LockerAddress:
         '''
         Initializer
         '''
+        self.publicName: str = None
         self.streetAndNumber : str = None
         self.state : str = None
         self.zipCode: int = None
@@ -72,11 +73,16 @@ class LockerTransferObject:
         '''
         Initializer
         '''
-        self.location_id : str = None
-        self.address : LockerAddress = None
-        self.description : str = None
-        self.geolocation : GpsCoordinates = None
+        self.location_id: str = None
+        self.address: LockerAddress = None
+        self.description: str = None
+        self.geolocation: GpsCoordinates = None
         self.compartments: list[LockerCompartmentInventory] = []
         self.contact: LockerContact = None
-        self.usable : bool = True
+        self.usable: bool = True
         self.is_public: bool = True
+
+    def __str__(self) -> str:
+        return super().__str__()
+
+
