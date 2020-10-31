@@ -22,19 +22,12 @@ class LockerLocationsView(APIView):
         '''
         Get location of all possible boxes
         '''
-        test = LockerTransferObject()
-        test.location_id = "1234-621761-671628"
-        coordinates = GpsCoordinates()
-        coordinates.latitude = 32.0
-        coordinates.longitude = 40.0
-        coordinates.altitude = 150.0
-        coordinates.accuracy = 7.0
+        locations = LockerLocationService.get_all_lockers()
 
-        test.geolocation = coordinates
-        
-        serializer = GeneralObjectSerializer(test)
+        serializer = GeneralObjectSerializer(locations, many=True)
         serialized = serializer.data
-        return JsonResponse(serialized)
+
+        return JsonResponse(serialized, safe=False)
 
 class LockerFindView(APIView):
     '''
