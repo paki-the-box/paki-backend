@@ -188,14 +188,18 @@ async def get_open_requests(user_id: uuid.UUID):
     :param user_id:
     :return:
     """
+    print(user_id)
+    print(user_id.hex)
     response_collection = []
-    # currentUser=Contacts.objects.filter(id=user_id).email
-    # allOpenRequests=HandoverTransaction.objects.filter(sending_contact=currentUser,transaction_state="C")
+    currentUser = Contacts.objects.get(contactId=user_id.hex)
+    print(currentUser)
+    allOpenRequests=HandoverTransaction.objects.filter(sending_contact=currentUser.id) #,transaction_state__exact="C")
+    print(allOpenRequests)
     # for oreq in allOpenRequests:
     #     pending=SendRequest(
     #     id=oreq.transactionId,
-    #     sender=oreq.sending_contact,
-    #     receiver=oreq.receiving_contact,
+    #     sender=oreq.sending_contact.id,
+    #     receiver=oreq.receiving_contact.id,
     #     box= oreq.box_id,
     #     size=oreq.size,
     #     dropoff_date=oreq.dropoff_date
