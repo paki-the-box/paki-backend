@@ -3,9 +3,7 @@ import uuid
 
 from django.db import migrations
 
-from paki.models import Contacts
-
-
+from paki.models import Contacts,FavBoxes
 
 
 class Migration(migrations.Migration):
@@ -56,6 +54,78 @@ class Migration(migrations.Migration):
                          pictureLink="https://ca.slack-edge.com/T01BWJSLH9V-U01DV8MP19S-10cccdc6fef3-512"
                          )
         tim.save()
+
+        favbox = FavBoxes(
+            boxId="bda03453-a1fd-33fb-bba4-fc570a52b124",
+            contact=tim
+        )
+        favbox.save()
+
+        favbox = FavBoxes(
+            boxId="6ba2251b-53e2-368a-a239-ecf8871ca9d9",
+            contact=tim
+        )
+        favbox.save()
+
+        favbox = FavBoxes(
+            boxId="5da0de41-05d2-348f-b40c-d79511198c4f",
+            contact=julian
+        )
+        favbox.save()
+
+        favbox = FavBoxes(
+            boxId="744fed19-61da-33c2-9446-bc756c33b412",
+            contact=julian
+        )
+        favbox.save()
+
+        favbox = FavBoxes(
+            boxId="4e7a4958-8a93-37ca-925f-b6d7efad0c39",
+            contact=niklas
+        )
+        favbox.save()
+
+        favbox = FavBoxes(
+            boxId="26549ac8-db0c-3366-b7af-0fd85a9f23cd",
+            contact=niklas
+        )
+        favbox.save()
+
+        favbox = FavBoxes(
+            boxId="76e1689a-37fe-333c-98bc-ee1dbc5c99ff",
+            contact=simon
+        )
+        favbox.save()
+
+        favbox = FavBoxes(
+            boxId="c0066ac5-5696-3709-9d43-6fd1fbfafa6e",
+            contact=simon
+        )
+        favbox.save()
+
+        favbox = FavBoxes(
+            boxId="033b5a3f-af53-3a96-b658-78f26f84d1d9",
+            contact=andreas
+        )
+        favbox.save()
+
+        favbox = FavBoxes(
+            boxId="f12db665-72cb-3772-bc12-edad8d28b3ce",
+            contact=andreas
+        )
+        favbox.save()
+
+        favbox = FavBoxes(
+            boxId="16a697d4-fc39-3f74-9ea4-01694573233e",
+            contact=bjoern
+        )
+        favbox.save()
+
+        favbox = FavBoxes(
+            boxId="6c15d119-4013-38f8-847a-f15520e81734",
+            contact=bjoern
+        )
+        favbox.save()
 
         # add favorites
 
