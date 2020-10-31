@@ -13,6 +13,7 @@ from pydantic import BaseModel, EmailStr
 from fastapi.middleware.wsgi import WSGIMiddleware
 from pakibackend.wsgi import get_wsgi_application
 
+from paki.models import HandoverTransaction
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
@@ -54,10 +55,10 @@ class Box(BaseModel):
 
 
 class ShipmentSizes(str, Enum):
-    S: 'S'
-    M: 'M'
-    L: 'L'
-    XL: 'XL'
+    S= 'S'
+    M= 'M'
+    L= 'L'
+    XL= 'XL'
 
 
 class DropoffStatus(str, Enum):
@@ -128,8 +129,19 @@ async def get_all_boxes(box: Box):
 
 
 @app.post("/requests/new")
-async def new_request(send_request: SendRequest):
-    pass
+def new_request(send_request: SendRequest):
+    transaction = HandoverTransaction()
+    transaction.transactionId = send_request.id
+    transaction.sending_contact= send_request.sender 
+    transaction.receiving_contact= send_request.receiver
+    transaction.box_id = send_request.box
+    transaction.size = send_request.size
+    transaction.transaction_state = 'C'
+    transaction.dropoff_date = send_request.dropoff_date
+
+    transaction.save()
+
+    
 
 
 @app.get('/requests/{user_id}', response_model=List[SendRequest])
