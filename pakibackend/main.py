@@ -42,8 +42,7 @@ app.add_middleware(
 )
 
 class Contact(BaseModel):
-    id: int
-    user_uuid: uuid.UUID
+    id: uuid.UUID
     email: EmailStr
     name: str
     picture: str
@@ -127,8 +126,7 @@ def get_all_contacts():
         fav_boxes_qr = FavBoxes.objects.filter(contact_id=c.id)
         for box in fav_boxes_qr:
             fav_boxes.append(uuid.UUID("{%s}" % box.boxId))
-        contact = Contact(id=c.id,
-                          user_uuid=uuid.UUID("{%s}" % c.contactId),
+        contact = Contact(id=uuid.UUID("{%s}" % c.contactId),
                           email=c.email,
                           name=c.name,
                           picture=c.pictureLink,
