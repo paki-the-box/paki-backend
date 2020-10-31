@@ -13,9 +13,7 @@ from pydantic import BaseModel, EmailStr
 from fastapi.middleware.wsgi import WSGIMiddleware
 from pakibackend.wsgi import get_wsgi_application
 
-<<<<<<< HEAD
 from paki.models import HandoverTransaction
-=======
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
@@ -23,7 +21,6 @@ origins = [
     "http://localhost:8080",
 ]
 
->>>>>>> d16024dd79dbd16d72de94f01553b6a8988f9d5b
 
 
 application = get_wsgi_application()
