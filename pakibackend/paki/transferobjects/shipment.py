@@ -30,3 +30,13 @@ class Shipment:
         self.starting_locker_id: str = None
         self.destination_locker_id: str = None
         self.shipment_status: str = None
+
+class CollectionCodeData:
+    def __init__(self):
+        '''
+        Initializer for the service
+        '''
+        self.shipment_id: str = None
+        self.collection_code: str = None
+        self.destination_locker_id: str = None
+        

@@ -1,5 +1,5 @@
 from .views.locker import LockerLocationsView, LockerFindView
-from .views.shipment import ShipmentView
+from .views.shipment import ShipmentView, CollectionCodeView
 from django.urls import path
 from .views import user
 
@@ -9,5 +9,6 @@ urlpatterns = [
     path('shipment', ShipmentView.as_view(), name='shipment-create'),
     path('shipment/<str:id>/', ShipmentView.as_view(), name='shipment-get'),
     path('user/add', user.UserAddView.as_view(), name='user-add'),
-    path('user/get/<str:email>', user.UserGetView.as_view(), name='user-get')
+    path('user/get/<str:email>', user.UserGetView.as_view(), name='user-get'),
+    path('shipment/<str:id>/collectioncode', CollectionCodeView.as_view(), name='collectioncode-get')
 ]
