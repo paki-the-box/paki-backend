@@ -77,6 +77,6 @@ class LockerTransferObject:
         self.description : str = None
         self.geolocation : GpsCoordinates = None
         self.compartments: list[LockerCompartmentInventory] = []
-        self.contact: LockerContact = None
+        self.contact: LockerContact = LockerAddress()
         self.usable : bool = True
         self.is_public: bool = True
