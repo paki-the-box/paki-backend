@@ -2,19 +2,6 @@ from django.db import models
 
 # Create your models here.
 
-
-class HandoverTransaction(models.Model):
-    transactionId = models.CharField(max_length=255, null=False, blank=False)
-    sending_contact = models.CharField(max_length=255, null=False, blank=False) # Mail of sender
-    receiving_contact = models.CharField(max_length=255, null=False, blank=False)
-    box_id = models.CharField(max_length=255, null=False, blank=False)
-    size = models.CharField(max_length=255, choices=[('S', 'Small'), ('M', 'Medium'), ('L','Large')])
-    accepted_by_receiver = models.BooleanField(null=True)
-    transaction_state = models.CharField(max_length=255, null=False, choices=[('C', 'Created'), ('A', 'Accepted'), ('D', 'Denied'), ('DR', 'Dropped-Off'), ('PU','Picked-UP')])
-    dropoff_date = models.DateField(null=False)
-    pickup_date = models.DateField(null=True)
-
-
 class Contacts(models.Model):
     contactId = models.UUIDField(null=False)
     name = models.CharField(max_length=255, null=False, blank=False)
@@ -26,6 +13,22 @@ class Contacts(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['email'], name='unique email contacts')
         ]
+
+class HandoverTransaction(models.Model):
+    transactionId = models.CharField(max_length=255, null=False, blank=False)
+    
+    sending_contact = models.ForeignKey(Contacts, related_name='transactions_sent', on_delete=models.CASCADE) # Mail of sender
+    receiving_contact = models.ForeignKey(Contacts, related_name='transactions_received', on_delete=models.CASCADE)
+
+    box_id = models.CharField(max_length=255, null=False, blank=False)
+    size = models.CharField(max_length=255, choices=[('S', 'Small'), ('M', 'Medium'), ('L','Large')])
+    accepted_by_receiver = models.BooleanField(null=True)
+    transaction_state = models.CharField(max_length=255, null=False, choices=[('C', 'Created'), ('A', 'Accepted'), ('D', 'Denied'), ('DR', 'Dropped-Off'), ('PU','Picked-UP')])
+    dropoff_date = models.DateField(null=False)
+    pickup_date = models.DateField(null=True)
+
+
+
 
 
 class FavBoxes(models.Model):

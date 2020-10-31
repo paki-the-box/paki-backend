@@ -77,15 +77,10 @@ class SendRequest(BaseModel):
     Sender -> Backend -> Receiver
     """
     id: uuid.UUID
-    sender: EmailStr
-    receiver: EmailStr
+    sender: uuid.UUID
+    receiver: uuid.UUID
     box: uuid.UUID
     size: ShipmentSizes
-    dropoff_date: date
-
-class PendingConfirmations(BaseModel):
-    id: uuid.UUID
-    sender: EmailStr
     dropoff_date: date
 
 # Step 2
@@ -114,7 +109,7 @@ class ShipmentConfirmation(BaseModel):
     pickup_date: date
 
 
-requests = {}
+requests = []
 
 
 @app.get("/contacts/", response_model=List[Contact])
@@ -136,18 +131,24 @@ def get_all_contacts():
     return resulting_contacts
 
 
-@app.post("/boxes/new")
-async def get_all_boxes(box: Box):
-    print("Got a Box:")
-    print(box)
+@app.get("/boxes/all", response_model=List[Box])
+async def get_all_boxes():
+    return [
+        Box(id='a8f5e8ca-b55d-4f9e-9a98-145b62ad37b1', label="Die Box in Kirchheim", address="Irgendwo in Kirchheim",
+            lat=48.6355632, lon=9.4052465),
+        Box(id='2bc06d25-067c-493f-a32a-79bcc2ba88ff', label="Die Box in Fulda", address="Irgendwo in Fulda", lat=50.4296862, lon=9.5423249),
+    ]
 
 
 @app.post("/requests/new")
 def new_request(send_request: SendRequest):
+    sdr = Contacts.objects.get(contactId__exact = send_request.sender)
+    rcvr = Contacts.objects.get(contactId__exact = send_request.receiver)
+
     transaction = HandoverTransaction()
     transaction.transactionId = send_request.id
-    transaction.sending_contact= send_request.sender 
-    transaction.receiving_contact= send_request.receiver
+    transaction.sending_contact= sdr 
+    transaction.receiving_contact= rcvr
     transaction.box_id = send_request.box
     transaction.size = send_request.size
     transaction.transaction_state = 'C'
@@ -155,7 +156,15 @@ def new_request(send_request: SendRequest):
 
     transaction.save()
 
-    
+
+@app.post("/requests/sent/count/{user_id}", response_model=int)
+async def open_sent_requests_for_user(user_id: uuid.UUID):
+    """
+    Get Number of Open Sent Requetsts that wait for confirmation
+    :param user_id:
+    :return:
+    """
+    return len(requests)
 
 
 @app.get('/requests/{user_id}', response_model=List[SendRequest])
@@ -189,31 +198,24 @@ def new_response(send_response: SendResponse):
     transaction.save()
 
 
-
-
-@app.get("/responses/{user_id}", status_code=200 ,response_model=List[PendingConfirmations])
-def get_open_responses(user_id: str):
-    transactions_waiting_on_confirmation = HandoverTransaction.objects.filter(receiving_contact__exact=user_id).filter(accepted_by_receiver__isnull=True)
-
-    response_collection = []
-    for transaction in transactions_waiting_on_confirmation:
-        pending = PendingConfirmations(id = transaction.transactionId, sender = transaction.sending_contact, dropoff_date = transaction.dropoff_date)
-        response_collection.append(pending)
-
-    return response_collection
-
-
-
-@app.post("/confirmations/{user_id}", response_model=List[ShipmentConfirmation])
-async def get_open_confirmations(user_id: str):
-
+@app.get("/responses/{user_id}", status_code=200 ,response_model=List[SendResponse])
+def get_open_responses(user_id: uuid.UUID):
     pass
 
+    # transactions_waiting_on_confirmation = HandoverTransaction.objects.filter(receiving_contact__exact=user_id).filter(accepted_by_receiver__isnull=True)
 
-# @app.get("/contacts", response_model=List[Contact])
-# async def contacts():
-#     pass
+    # response_collection = []
+    # for transaction in transactions_waiting_on_confirmation:
+    #     pending = PendingConfirmations(id = transaction.transactionId, sender = transaction.sending_contact, dropoff_date = transaction.dropoff_date)
+    #     response_collection.append(pending)
 
+    # return response_collection
+
+
+#TODO: Change to get
+@app.post("/confirmations/{user_id}", response_model=List[ShipmentConfirmation])
+async def get_open_confirmations(user_id: uuid.UUID):
+    pass
 
 @app.get("/shipment/{id}/delivery_code")
 async def get_delivery_code(id: uuid.UUID):
