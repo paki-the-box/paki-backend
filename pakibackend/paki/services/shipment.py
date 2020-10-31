@@ -3,13 +3,28 @@ Module with services for shipments
 '''
 
 from ..transferobjects.shipment import CreateShipmentData, Shipment, CollectionCodeData
+from ..transferobjects.orderdata import ShippedItem, ShippedItemPhysicalProperties
 from .errors import NotFoundException
 from .apiclient import BoxApiClientService
-
+from ..models import HandoverTransaction
 
 class ShipmentService:
+
     @staticmethod
-    def create_shipment(shipment_data: CreateShipmentData):
+    def shipment_from_transaction(transaction: HandoverTransaction):
+        '''
+        Get the shipment data from the transaction information
+        '''
+        shipment_data = CreateShipmentData()
+        shipment_data.starting_locker_id = transaction.box_id
+        
+        shipment_data.shipped_item = ShippedItem()
+        shipment_data.shipped_item.physicalPropeties = ShippedItemPhysicalProperties()
+        
+        return shipment_data
+
+    @staticmethod
+    def create_shipment(transaction: HandoverTransaction):
         '''
         Create a shipment in the system
         * Validate inputs and availabilities
@@ -17,6 +32,7 @@ class ShipmentService:
         * Return the shipment information to the user
         '''
         #TODO: Implement this
+        shipment_data = ShipmentService.shipment_from_transaction(transaction)
         response = BoxApiClientService.create_shipment(shipment_data)
         return response
 

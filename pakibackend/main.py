@@ -12,8 +12,13 @@ from fastapi import FastAPI
 from pydantic import BaseModel, EmailStr
 from fastapi.middleware.wsgi import WSGIMiddleware
 from pakibackend.wsgi import get_wsgi_application
+from fastapi import FastAPI, HTTPException
 
+
+from paki.services.shipment import ShipmentService
 from paki.models import HandoverTransaction
+from paki.services.errors import ShipmentCreationFailedException
+
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
@@ -62,8 +67,8 @@ class ShipmentSizes(str, Enum):
 
 
 class DropoffStatus(str, Enum):
-    ACCEPTED: 'accepted'
-    DENIED: 'denied'
+    ACCEPTED = 'accepted'
+    DENIED = 'denied'
 
 
 # Step 1
@@ -87,7 +92,6 @@ class SendResponse(BaseModel):
     Receiver -> Backend
     """
     id: uuid.UUID
-    request: SendRequest
     status: DropoffStatus
     pickup_date: date
 
@@ -154,9 +158,25 @@ async def get_open_requests(user_id: uuid.UUID):
     pass
 
 
-@app.post("/responses/new")
-async def new_response(send_response: SendResponse):
-    pass
+@app.post("/responses/new", status_code=204)
+def new_response(send_response: SendResponse):
+    transaction = HandoverTransaction.objects.get(transactionId = send_response.id)
+
+    if send_response.status == DropoffStatus.ACCEPTED:
+        # Create a shipment in the API
+        try:
+            ShipmentService.create_shipment(transaction)
+        except ShipmentCreationFailedException as creationFailed:
+            raise HTTPException(status_code=400, detail="Failed to create shipment in Backend")
+        # If suceessful 
+        transaction.transaction_state = 'A'
+        transaction.accepted_by_receiver = True
+    else:
+        # Declined -> Notify the user
+        transaction.transaction_state = 'D'
+        transaction.accepted_by_receiver = False
+
+    transaction.save()
 
 
 @app.post("/responses/{user_id}", response_model=List[SendResponse])

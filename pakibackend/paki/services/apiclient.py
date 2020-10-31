@@ -57,15 +57,15 @@ class BoxApiClientService:
         '''
         locker_delivery_order_request= {
                 "affiliateReferenceId": str(uuid4()),
-                "lockerLocationId": shipment_data['starting_locker_id'],
+                "lockerLocationId": shipment_data.starting_locker_id,
                 "shipped_item": {
-                    "shippedItemType": shipment_data['shipped_item']['packaged'],
-                    "forAccessibility": shipment_data['shipped_item']['accessible'],
-                    "weight": shipment_data['shipped_item']['physicalProperties']['weight'],
-                    "length": shipment_data['shipped_item']['physicalProperties']['width'],
-                    "height": shipment_data['shipped_item']['physicalProperties']['height'],
-                    "depth": shipment_data['shipped_item']['physicalProperties']['depth'],
-                    "labelId": shipment_data['shipped_item']['labelId']
+                    "shippedItemType": "PACKAGED",
+                    "forAccessibility": False,
+                    "weight": 100,
+                    "length": 200,
+                    "height": 200,
+                    "depth": 200,
+                    "labelId": shipment_data.shipped_item.labelId
                 },
                 "courier": "DEMO",
                 "deliveryMode": "NOT_GUARANTEED",
