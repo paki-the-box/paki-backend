@@ -19,4 +19,4 @@ class LockerLocationService:
         '''
         Get the lockers at a certain location
         '''
-        return [] 
+        return BoxApiClientService.find_locker_from_api(latitude, longitude, radius) 

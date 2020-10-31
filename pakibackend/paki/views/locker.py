@@ -40,10 +40,10 @@ class LockerFindView(APIView):
         lat = float(kwargs['latitude'])
         long = float(kwargs['longitude'])
 
-        radius = self.request.query_params.get('radius', 50.0)
+        radius = int(self.request.query_params.get('radius', 50))
 
         lockers = LockerLocationService.get_locker_at_location(lat, long, radius)
-        serializer = GeneralObjectSerializer(lockers)
+        serializer = GeneralObjectSerializer(lockers, many=True)
         serialized = serializer.data
 
-        return JsonResponse(serialized)
+        return JsonResponse(serialized, safe=False)

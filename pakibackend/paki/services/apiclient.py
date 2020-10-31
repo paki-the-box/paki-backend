@@ -56,8 +56,21 @@ class BoxApiClientService:
             mapped_results = [BoxApiClientService.map_location_results(result) for result in locations.results]
 
             return mapped_results
-    
 
+    @staticmethod
+    def find_locker_from_api(latitude, longitude, radius):
+        if BoxApiClientService._api_token is None:
+            BoxApiClientService._api_token = BoxApiClientService._get_access_token(BoxApiClientService.TOKEN_ENDPOINT, BoxApiClientService.CLIENT_ID, BoxApiClientService.CLIENT_SECRET)
+            BoxApiClientService.configuration.access_token = BoxApiClientService._api_token
+
+        with openapi_client.ApiClient(BoxApiClientService.configuration) as api_client:
+            api_instance = openapi_client.BoxAPIApi(api_client)
+            locations = api_instance.get_locker_locations_nearby_geoposition(latitude, longitude, radius=radius)
+
+            mapped_results = [BoxApiClientService.map_location_results(result) for result in locations]
+
+            return mapped_results
+    
     @staticmethod
     def map_location_results(result):
         '''
