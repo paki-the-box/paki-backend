@@ -13,7 +13,7 @@ from pydantic import BaseModel, EmailStr
 from fastapi.middleware.wsgi import WSGIMiddleware
 from pakibackend.wsgi import get_wsgi_application
 
-from paki.models import HandoverTransaction
+from paki.models import HandoverTransaction,Contacts,FavBoxes
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
@@ -111,12 +111,22 @@ requests = {}
 
 @app.get("/contacts/", response_model=List[Contact])
 async def get_all_contacts():
-    return [
-        Contact(id='bdd2ddf2-3b93-4c0c-b3eb-da16a389c64b', email='j.feinauer@pragmaticminds.de', name='Julian Feinauer',
-                picture='https://ca.slack-edge.com/T01BWJSLH9V-U01DL19HR6H-g799b8ba68f5-512', favorite_boxes=[]),
-        Contact(id='7b7f45ba-440f-496f-bd3e-b6c25ac6dde3', email='niklas@merz.de', name='Niklas Merz',
-                picture='https://ca.slack-edge.com/T01BWJSLH9V-U01DGBU5TE2-9c36519a20c7-512', favorite_boxes=[])
-    ]
+    resulting_contacts = []
+    contacts = Contacts.objects.all()
+    for c in contacts:
+        contact = Contact()
+        contact.id = c['contactId']
+        contact.email = c['email']
+        contact.name = c['name']
+        contact.picture = c['pictureLink']
+        fav_boxes = []
+        fav_boxes_qr = FavBoxes.objects.filter(contact_id=c['id'])
+        for box in fav_boxes_qr:
+            fav_boxes.append(box['boxId'])
+        contact.favorite_boxes = fav_boxes
+        resulting_contacts.append(contact)
+
+    return resulting_contacts
 
 
 
