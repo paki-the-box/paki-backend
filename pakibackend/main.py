@@ -4,12 +4,21 @@ from enum import Enum
 from typing import List
 import os
 
+from starlette.middleware.cors import CORSMiddleware
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pakibackend.settings")
 
 from fastapi import FastAPI
 from pydantic import BaseModel, EmailStr
 from fastapi.middleware.wsgi import WSGIMiddleware
 from pakibackend.wsgi import get_wsgi_application
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8080",
+]
 
 
 
@@ -18,9 +27,18 @@ application = get_wsgi_application()
 app = FastAPI()
 app.mount("/admin", WSGIMiddleware(application))
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Contact(BaseModel):
     id: int
+    id: uuid.UUID
+    email: EmailStr
     name: str
     picture: str
     favorite_boxes: List[uuid.UUID]
@@ -87,12 +105,19 @@ class ShipmentConfirmation(BaseModel):
     pickup_date: date
 
 
-@app.get("/boxes/all", response_model=List[Box])
-async def get_all_boxes():
+requests = {}
+
+
+@app.get("/contacts/", response_model=List[Contact])
+async def get_all_contacts():
     return [
-        Box(id=uuid.uuid4(), label="", address="", lat=1.0, lon=2.0),
-        Box(id=uuid.uuid4(), label="2", address="", lat=1.0, lon=2.0),
+        Contact(id='bdd2ddf2-3b93-4c0c-b3eb-da16a389c64b', email='j.feinauer@pragmaticminds.de', name='Julian Feinauer',
+                picture='https://ca.slack-edge.com/T01BWJSLH9V-U01DL19HR6H-g799b8ba68f5-512', favorite_boxes=[]),
+        Contact(id='7b7f45ba-440f-496f-bd3e-b6c25ac6dde3', email='niklas@merz.de', name='Niklas Merz',
+                picture='https://ca.slack-edge.com/T01BWJSLH9V-U01DGBU5TE2-9c36519a20c7-512', favorite_boxes=[])
     ]
+
+
 
 
 @app.post("/boxes/new")
