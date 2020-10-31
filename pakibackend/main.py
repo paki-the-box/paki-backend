@@ -84,6 +84,10 @@ class SendRequest(BaseModel):
     size: ShipmentSizes
     dropoff_date: date
 
+class PendingConfirmations(BaseModel):
+    id: uuid.UUID
+    sender: EmailStr
+    dropoff_date: date
 
 # Step 2
 class SendResponse(BaseModel):
@@ -179,13 +183,24 @@ def new_response(send_response: SendResponse):
     transaction.save()
 
 
-@app.post("/responses/{user_id}", response_model=List[SendResponse])
-async def get_open_responses(user_id: uuid.UUID):
-    pass
+
+
+@app.get("/responses/{user_id}", status_code=200 ,response_model=List[PendingConfirmations])
+def get_open_responses(user_id: str):
+    transactions_waiting_on_confirmation = HandoverTransaction.objects.filter(receiving_contact__exact=user_id).filter(accepted_by_receiver__isnull=True)
+
+    response_collection = []
+    for transaction in transactions_waiting_on_confirmation:
+        pending = PendingConfirmations(id = transaction.transactionId, sender = transaction.sending_contact, dropoff_date = transaction.dropoff_date)
+        response_collection.append(pending)
+
+    return response_collection
+    
 
 
 @app.post("/confirmations/{user_id}", response_model=List[ShipmentConfirmation])
-async def get_open_confirmations(user_id: uuid.UUID):
+async def get_open_confirmations(user_id: str):
+
     pass
 
 
