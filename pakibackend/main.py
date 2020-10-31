@@ -188,7 +188,21 @@ async def get_open_requests(user_id: uuid.UUID):
     :param user_id:
     :return:
     """
-    pass
+    response_collection = []
+    currentUser=Contact.objects.filter(id=user_id).email
+    allOpenRequests=HandoverTransaction.objects.filter(sending_contact=currentUser,transaction_state="C")
+    for oreq in allOpenRequests:
+        pending=SendRequest(
+        id=oreq.transactionId,
+        sender=oreq.sending_contact,
+        receiver=oreq.receiving_contact,
+        box= oreq.box_id,
+        size=oreq.size,
+        dropoff_date=oreq.dropoff_date
+        )
+        response_collection.append(pending)
+
+    return response_collection
 
 
 @app.post("/responses/new", status_code=204)
