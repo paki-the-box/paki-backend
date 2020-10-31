@@ -16,6 +16,7 @@ from fastapi import FastAPI, HTTPException
 
 
 from paki.services.shipment import ShipmentService
+from paki.services.lockerlocation import LockerLocationService
 from paki.services.errors import ShipmentCreationFailedException
 
 from paki.models import HandoverTransaction,Contacts,FavBoxes
@@ -133,11 +134,24 @@ def get_all_contacts():
 
 @app.get("/boxes/all", response_model=List[Box])
 async def get_all_boxes():
-    return [
-        Box(id='a8f5e8ca-b55d-4f9e-9a98-145b62ad37b1', label="Die Box in Kirchheim", address="Irgendwo in Kirchheim",
-            lat=48.6355632, lon=9.4052465),
-        Box(id='2bc06d25-067c-493f-a32a-79bcc2ba88ff', label="Die Box in Fulda", address="Irgendwo in Fulda", lat=50.4296862, lon=9.5423249),
-    ]
+    boxes = LockerLocationService.get_all_lockers()
+
+    box_models = []
+    for box in boxes:
+        box_model = Box(id = box.location_id,
+        label = f"Irgendwo in {box.address.publicName}",
+        address =  box.address.publicName,
+        lat = box.geolocation.latitude, 
+        lon = box.geolocation.longitude)
+        box_models.append(box_model)
+
+    return box_models
+
+    # return [
+    #     Box(id='a8f5e8ca-b55d-4f9e-9a98-145b62ad37b1', label="Die Box in Kirchheim", address="Irgendwo in Kirchheim",
+    #         lat=48.6355632, lon=9.4052465),
+    #     Box(id='2bc06d25-067c-493f-a32a-79bcc2ba88ff', label="Die Box in Fulda", address="Irgendwo in Fulda", lat=50.4296862, lon=9.5423249),
+    # ]
 
 
 @app.post("/requests/new")

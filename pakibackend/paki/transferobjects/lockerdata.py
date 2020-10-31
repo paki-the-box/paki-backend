@@ -15,6 +15,7 @@ class LockerAddress:
         self.zipCode: int = None
         self.city : str = None
         self.countryCode : str = None
+        self.publicName: str = None
 
 class GpsCoordinates:
     '''
