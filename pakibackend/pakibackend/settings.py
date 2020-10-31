@@ -25,7 +25,7 @@ SECRET_KEY = 'jjmy43&3_0jssldygo2r_vt_yzmy7jg+ah)68jv+jjl0l$4&#('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['paki-api.pragmaticminds.de']
 
 # OPEN ID Connect Security Settings
 OPEN_ID_CONNECT_SERVER = "https://auth.demo.pragmaticindustries.de/auth/realms/packi"
