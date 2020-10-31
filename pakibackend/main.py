@@ -43,7 +43,7 @@ app.add_middleware(
 
 class Contact(BaseModel):
     id: int
-    id: uuid.UUID
+    user_uuid: uuid.UUID
     email: EmailStr
     name: str
     picture: str
@@ -119,25 +119,23 @@ requests = {}
 
 
 @app.get("/contacts/", response_model=List[Contact])
-async def get_all_contacts():
+def get_all_contacts():
     resulting_contacts = []
     contacts = Contacts.objects.all()
     for c in contacts:
-        contact = Contact()
-        contact.id = c['contactId']
-        contact.email = c['email']
-        contact.name = c['name']
-        contact.picture = c['pictureLink']
         fav_boxes = []
-        fav_boxes_qr = FavBoxes.objects.filter(contact_id=c['id'])
+        fav_boxes_qr = FavBoxes.objects.filter(contact_id=c.id)
         for box in fav_boxes_qr:
-            fav_boxes.append(box['boxId'])
-        contact.favorite_boxes = fav_boxes
+            fav_boxes.append(uuid.UUID("{%s}" % box.boxId))
+        contact = Contact(id=c.id,
+                          user_uuid=uuid.UUID("{%s}" % c.contactId),
+                          email=c.email,
+                          name=c.name,
+                          picture=c.pictureLink,
+                          favorite_boxes=fav_boxes)
         resulting_contacts.append(contact)
 
     return resulting_contacts
-
-
 
 
 @app.post("/boxes/new")
@@ -214,9 +212,9 @@ async def get_open_confirmations(user_id: str):
     pass
 
 
-@app.get("/contacts", response_model=List[Contact])
-async def contacts():
-    pass
+# @app.get("/contacts", response_model=List[Contact])
+# async def contacts():
+#     pass
 
 
 @app.get("/shipment/{id}/delivery_code")
